@@ -1,9 +1,44 @@
 import { fetchProjects } from "@/lib/api";
 import { Project } from "@/types/project";
-import { ProjectCard } from "@/components/shared/ProjectCard";
-import { ReactElement } from "react";
+import { ReactElement, Suspense } from "react";
 import { createPageMetadata } from "@/lib/metadata";
 import Breadcrumbs from "@/components/shared/BreadCrumbsNav";
+import dynamic from "next/dynamic";
+
+// Lazy load the ProjectCard component
+const ProjectCard = dynamic(
+  () => import("@/components/shared/ProjectCard").then((mod) => ({ default: mod.ProjectCard })),
+  {
+    loading: () => <ProjectCardSkeleton />,
+    ssr: true, // Keep SSR for SEO
+  }
+);
+
+// Loading skeleton component that matches your card design
+function ProjectCardSkeleton() {
+  return (
+    <div className="animate-pulse bg-white rounded-lg shadow-md overflow-hidden">
+      {/* Image placeholder */}
+      <div className="bg-gray-200 h-48 w-full"></div>
+
+      {/* Content placeholder */}
+      <div className="p-6 space-y-4">
+        {/* Title placeholder */}
+        <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+
+        {/* Description placeholder */}
+        <div className="space-y-2">
+          <div className="h-4 bg-gray-200 rounded"></div>
+          <div className="h-4 bg-gray-200 rounded"></div>
+          <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+        </div>
+
+        {/* Button placeholder */}
+        <div className="h-10 bg-gray-200 rounded w-32"></div>
+      </div>
+    </div>
+  );
+}
 
 export const metadata = createPageMetadata("Projects", "All of my projects.");
 
@@ -56,11 +91,30 @@ export default async function ProjectsPage(): Promise<ReactElement> {
           {uiProjects.length === 0 ? (
             <p className="text-gray-600">No UI projects found.</p>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {uiProjects.map((project) => (
-                <ProjectCard key={project.slug} project={project} />
-              ))}
-            </div>
+            <Suspense
+              fallback={
+                <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                  {Array.from({ length: Math.min(uiProjects.length, 6) }).map((_, i) => (
+                    <ProjectCardSkeleton key={i} />
+                  ))}
+                </div>
+              }
+            >
+              <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                {uiProjects.map((project, index) => (
+                  <div
+                    key={project.slug}
+                    className="opacity-0 animate-fade-in"
+                    style={{
+                      animationDelay: `${index * 100}ms`,
+                      animationFillMode: "both",
+                    }}
+                  >
+                    <ProjectCard project={project} />
+                  </div>
+                ))}
+              </div>
+            </Suspense>
           )}
         </section>
       </section>
@@ -71,11 +125,30 @@ export default async function ProjectsPage(): Promise<ReactElement> {
         {systemProjects.length === 0 ? (
           <p className="text-gray-600">No system projects found.</p>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {systemProjects.map((project) => (
-              <ProjectCard key={project.slug} project={project} />
-            ))}
-          </div>
+          <Suspense
+            fallback={
+              <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                {Array.from({ length: Math.min(systemProjects.length, 6) }).map((_, i) => (
+                  <ProjectCardSkeleton key={i} />
+                ))}
+              </div>
+            }
+          >
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              {systemProjects.map((project, index) => (
+                <div
+                  key={project.slug}
+                  className="opacity-0 animate-fade-in"
+                  style={{
+                    animationDelay: `${index * 100}ms`,
+                    animationFillMode: "both",
+                  }}
+                >
+                  <ProjectCard project={project} />
+                </div>
+              ))}
+            </div>
+          </Suspense>
         )}
       </section>
     </div>
