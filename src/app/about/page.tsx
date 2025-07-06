@@ -19,6 +19,7 @@ export default function About() {
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expandedCards, setExpandedCards] = useState(new Set());
 
   useEffect(() => {
     const loadExperiences = async () => {
@@ -39,6 +40,23 @@ export default function About() {
 
   const handleResumeClick = () => {
     window.open("files/Resume.pdf", "_blank");
+  };
+
+  const toggleExpanded = (id: string | number) => {
+    setExpandedCards((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const truncateText = (text: string, maxLength: number = 150): string => {
+    if (!text) return "";
+    return text.length <= maxLength ? text : text.substring(0, maxLength) + "...";
   };
 
   /* ------------------------
@@ -139,67 +157,84 @@ export default function About() {
         ) : (
           <Carousel className="w-full">
             <CarouselContent className="-ml-2 md:-ml-4">
-              {experiences.map((experience) => (
-                <CarouselItem key={experience.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
-                  <div className="rounded-lg border overflow-hidden hover:shadow-xl transition-shadow">
-                    {/* Experience Image */}
-                    <div className="relative h-48 bg-gray-200">
-                      {experience.img ? (
-                        <Image
-                          src={`/media/experience/${experience.img}`}
-                          alt={experience.company || "Company logo"}
-                          fill
-                          className="object-cover"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            const parent = target.parentElement;
-                            if (parent) {
-                              target.style.display = "none";
-                              parent.innerHTML =
-                                '<div class="w-full h-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center"><span class="text-white text-lg font-semibold">Experience</span></div>';
-                            }
-                          }}
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center">
-                          <span className="text-white text-lg font-semibold">Experience</span>
+              {experiences.map((experience) => {
+                const isExpanded = expandedCards.has(experience.id);
+                const shouldTruncate = experience.desc && experience.desc.length > 150;
+
+                return (
+                  <CarouselItem key={experience.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
+                    <div className="rounded-lg border overflow-hidden hover:shadow-xl transition-shadow">
+                      {/* Experience Image */}
+                      <div className="relative h-48 bg-gray-200">
+                        {experience.img ? (
+                          <Image
+                            src={`/media/experience/${experience.img}`}
+                            alt={experience.company || "Company logo"}
+                            fill
+                            className="object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              const parent = target.parentElement;
+                              if (parent) {
+                                target.style.display = "none";
+                                parent.innerHTML =
+                                  '<div class="w-full h-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center"><span class="text-white text-lg font-semibold">Experience</span></div>';
+                              }
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center">
+                            <span className="text-white text-lg font-semibold">Experience</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Experience Content */}
+                      <div className="p-6">
+                        <h3 className="text-2xl font-semibold mb-2">{experience.company}</h3>
+
+                        {/* Role */}
+                        {(experience.company || experience.role) && (
+                          <div className="text-sm text-gray-600 mb-2">
+                            {experience.role && <span className="font-medium">{experience.role}</span>}
+                          </div>
+                        )}
+
+                        {/* Date Range */}
+                        {(experience.startDate || experience.endDate) && (
+                          <div className="text-sm text-gray-500 mb-3">
+                            {experience.startDate &&
+                              new Date(experience.startDate).toLocaleDateString("en-US", {
+                                month: "short",
+                                year: "numeric",
+                              })}
+                            {experience.startDate && experience.endDate && " - "}
+                            {experience.endDate &&
+                              new Date(experience.endDate).toLocaleDateString("en-US", {
+                                month: "short",
+                                year: "numeric",
+                              })}
+                          </div>
+                        )}
+
+                        <div className="text-gray-600 mb-4">
+                          <p className={!isExpanded ? "line-clamp-3" : ""}>
+                            {isExpanded ? experience.desc : truncateText(experience.desc)}
+                          </p>
+                          {shouldTruncate && (
+                            <button
+                              onClick={() => toggleExpanded(experience.id)}
+                              className="text-blue-600 hover:text-blue-800 text-sm font-medium mt-2 focus:outline-none focus:underline"
+                            >
+                              {isExpanded ? "See less" : "See more..."}
+                            </button>
+                          )}
                         </div>
-                      )}
+                      </div>
                     </div>
-
-                    {/* Experience Content */}
-                    <div className="p-6">
-                      <h3 className="text-2xl font-semibold mb-2">{experience.company}</h3>
-
-                      {/* Role */}
-                      {(experience.company || experience.role) && (
-                        <div className="text-sm text-gray-600 mb-2">
-                          {experience.role && <span className="font-medium">{experience.role}</span>}
-                        </div>
-                      )}
-
-                      {/* Date Range */}
-                      {(experience.startDate || experience.endDate) && (
-                        <div className="text-sm text-gray-500 mb-3">
-                          {experience.startDate &&
-                            new Date(experience.startDate).toLocaleDateString("en-US", {
-                              month: "short",
-                              year: "numeric",
-                            })}
-                          {experience.startDate && experience.endDate && " - "}
-                          {experience.endDate &&
-                            new Date(experience.endDate).toLocaleDateString("en-US", {
-                              month: "short",
-                              year: "numeric",
-                            })}
-                        </div>
-                      )}
-
-                      <p className="text-gray-600 mb-4 line-clamp-3">{experience.desc}</p>
-                    </div>
-                  </div>
-                </CarouselItem>
-              ))}
+                  </CarouselItem>
+                );
+              })}
             </CarouselContent>
             <CarouselPrevious />
             <CarouselNext />
