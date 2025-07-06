@@ -205,8 +205,8 @@ export function LazyProjectGrid({
 
   return (
     <div className="space-y-6">
-      {/* Progress indicator with better styling */}
-      {loadedCount < projects.length && (
+      {/* Progress indicator */}
+      {/* {loadedCount < projects.length && (
         <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
           <div className="flex items-center space-x-3">
             <div className="w-4 h-4 bg-blue-500 rounded-full animate-pulse"></div>
@@ -221,7 +221,7 @@ export function LazyProjectGrid({
             ></div>
           </div>
         </div>
-      )}
+      )} */}
 
       <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((project, index) => (
@@ -245,7 +245,7 @@ export function LazyProjectGrid({
       )}
 
       {/* Completion message */}
-      {loadedCount === projects.length && projects.length > initialLoad && (
+      {/* {loadedCount === projects.length && projects.length > initialLoad && (
         <div className="text-center py-8">
           <div className="inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium">
             <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -258,7 +258,7 @@ export function LazyProjectGrid({
             All projects loaded ({projects.length})
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
