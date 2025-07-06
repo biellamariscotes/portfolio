@@ -83,7 +83,7 @@ export default function About() {
 
               <div className="text-base space-y-2 mb-6">
                 <p>
-                  A graduating student with a keen interest in creating web applications that (hopefully) don’t crash.
+                  A graduating student with a keen interest in creating web applications that (hopefully) don’t crash. I
                   am also exploring the fundamentals of machine learning and its potential applications in real-world
                   scenarios.{" "}
                 </p>
