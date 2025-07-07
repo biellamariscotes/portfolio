@@ -143,7 +143,7 @@ interface LazyProjectGridProps {
 
 export function LazyProjectGrid({
   projects,
-  initialLoad = 6,
+  initialLoad = 3,
   batchSize = 3,
   enableVirtualization = false,
 }: LazyProjectGridProps) {

@@ -107,7 +107,7 @@ export default async function ProjectsPage(): Promise<ReactElement> {
           <p className="text-gray-600">No system projects found.</p>
         ) : (
           <Suspense fallback={<ProjectGridSkeleton />}>
-            <LazyProjectGrid projects={systemProjects} />
+            <LazyProjectGrid projects={systemProjects} initialLoad={0} />
           </Suspense>
         )}
       </section>
