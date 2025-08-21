@@ -91,16 +91,7 @@ export default async function ProjectPage({ params }: PageProps) {
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="relative h-64 md:h-96 bg-gray-200">
           {project.type === "system" ? (
-            <video
-              src={`/media/system/${project.image}`}
-              autoPlay
-              loop
-              muted
-              playsInline
-              disablePictureInPicture
-              disableRemotePlayback
-              className="w-full h-full object-cover"
-            />
+            <video src={`/media/system/${project.image}`} controls playsInline className="w-full h-full object-cover" />
           ) : (
             <Image
               src={`/media/ui/${project.image}`}
