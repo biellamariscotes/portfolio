@@ -157,7 +157,7 @@ export default async function ProjectPage({ params }: PageProps) {
               {/* Source Code / Figma Link */}
               <a href={project.link} target="_blank" rel="noopener noreferrer">
                 <Button variant={project.liveLink ? "outline" : "default"} className="cursor-pointer">
-                  {project.type === "ui" ? "View Figma" : "View Source Code"}
+                  {project.type === "ui" ? "View Figma" : "Source Code"}
                 </Button>
               </a>
             </div>
