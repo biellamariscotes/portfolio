@@ -147,8 +147,18 @@ export default async function ProjectPage({ params }: PageProps) {
 
           <div className="border-t pt-6 mt-6">
             <div className="flex gap-4">
+              {/* Live Demo */}
+              {project.liveLink && (
+                <a href={project.liveLink} target="_blank" rel="noopener noreferrer">
+                  <Button className="cursor-pointer">Live Demo</Button>
+                </a>
+              )}
+
+              {/* Source Code / Figma Link */}
               <a href={project.link} target="_blank" rel="noopener noreferrer">
-                <Button className="cursor-pointer">{project.type === "ui" ? "View Figma" : "View Source Code"}</Button>
+                <Button variant={project.liveLink ? "outline" : "default"} className="cursor-pointer">
+                  {project.type === "ui" ? "View Figma" : "View Source Code"}
+                </Button>
               </a>
             </div>
           </div>
